@@ -12,6 +12,10 @@ body {
   font-family: sans-serif;
 }
 
+input[type="text"] {
+  width: 50px;
+}
+
 .container {
   width: 640px;
   margin: 0 auto;

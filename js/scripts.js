@@ -5,26 +5,38 @@
   let containerCont = false
 
   let needInput = (num) => {
-    let par = ''
+    let par = document.createElement('span')
+    par.id = 'kidsAgeContainer'
     if(num == 1) {
-      par += `kid is <input id="kidAge1" type="text">.`
+      par.innerHTML += `<input class="kidsAge" type="text">.`
     } else if (num == 2) {
-      par += `kids are <input id="kidAge1" type="text"> and <input id="kidAge2" type="text">.`
+      par.innerHTML += `<input class="kidsAge" type="text"> and <input class="kidsAge" type="text">.`
     } else {
-      par = 'kids are'
       for(let i = 1; i <= num; i++) {
         if(i < (num-1) ) {
-          par += `<input id="kidAge${i}" type="text">,`
+          par.innerHTML += `<input class="kidsAge" type="text">,`
         } else if (i == (num-1)) {
-          par += `<input id="kidAge${i}" type="text">, and`
+          par.innerHTML += `<input class="kidsAge" type="text">, and`
         } else if (i == num) {
-          par += `<input id="kidAge${i}" type="text">.`
+          par.innerHTML += `<input class="kidsAge" type="text">.`
         }
 
       }
     }
 
     return par
+  }
+
+  let validateInput = (e) => {
+
+  }
+
+  let validationAge18 = (e) => {
+
+  }
+
+  let validateRequired = (e) => {
+    
   }
   
   //start
@@ -60,7 +72,11 @@
 
       selectBox.addEventListener('change', (e) => {
         const { value } = e.target
-        paragraph = document.createElement('p')
+        let ageSelect = document.getElementById('ageSelect')
+        if(ageSelect != null) container.removeChild(ageSelect)
+        let paragraph = document.createElement('p')
+        paragraph.id = 'ageSelect'
+
 
         if(value == 1) {
           paragraph.innerHTML = `I'm <input id="meAge" type="text"> years old`
@@ -69,33 +85,45 @@
         } else if (value == 3) {
           paragraph.innerHTML = `I'm <input id="meAge" type="text"> 
                                   years old and my spouse is <input id="spouseAge" type="text"> 
-                                  and my <select id="kidSelect"></select> kid is`
+                                  and my <select id="kidSelect"></select> <span id="replaceText">kid is</span>`
         } else if (value == 4) {
           paragraph.innerHTML = `I'm <input id="meAge" type="text"> 
-                                  years old and my <select id="kidSelect"></select> kid is`
+                                  years old and my <select id="kidSelect"></select> <span id="replaceText">kid is</span>`
         }
         container.append(paragraph)
 
         let kidSelect = document.getElementById('kidSelect')
-        for(let i = 0; i < 11; i++) {
-          let opt = document.createElement('option')
-          opt.value = i
-          opt.innerHTML = i
-
-          if(i === 0) {
+        if(kidSelect != null) {
+          for(let i = 0; i < 10; i++) {
+            let opt = document.createElement('option')
             opt.value = i
-            opt.innerHTML = ''
-            opt.disabled = true
-            opt.selected = true
-          }
-          kidSelect.append(opt)
-        }
+            opt.innerHTML = i
 
-        kidSelect.addEventListener('change', (e) => {
-          let defaultPar = paragraph.innerHTML
-          paragraph.innerHTML = defaultPar.substr(0, defaultPar.length-6)
-          paragraph.innerHTML += needInput(e.target.value)
-        })
+            if(i === 0) {
+              opt.value = i
+              opt.innerHTML = ''
+              opt.disabled = true
+              opt.selected = true
+            }
+            kidSelect.append(opt)
+          }
+
+          kidSelect.addEventListener('change', (e) => {
+            const {value} = e.target
+            let kidsAgeContainer = document.getElementById('kidsAgeContainer')
+            let replaceText = document.getElementById('replaceText')
+            let ageSelect = document.getElementById('ageSelect')
+
+            if(kidsAgeContainer != null) ageSelect.removeChild(kidsAgeContainer)
+
+            if (value < 2) {
+              replaceText.innerHTML = 'kid is'
+            } else {
+              replaceText.innerHTML = 'kid are'
+            }
+            replaceText.after(needInput(value))
+          })
+        }
 
       })
     }
