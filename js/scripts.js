@@ -28,7 +28,8 @@
   }
 
   let validateInput = (e) => {
-
+    if (!e.key.match(/([0-9])/g)) e.preventDefault()
+    if (e.target.value < 5)
   }
 
   let validationAge18 = (e) => {
@@ -40,6 +41,7 @@
   }
   
   //start
+  inputZip.addEventListener('keypress', validateInput)
   inputZip.addEventListener('keyup', (e) => {
     
     if(e.target.value === '12345' && containerCont === false)  {
@@ -122,6 +124,12 @@
               replaceText.innerHTML = 'kid are'
             }
             replaceText.after(needInput(value))
+
+            let kidsInput = document.getElementsByClassName('kidsAge')
+
+            for(kidInput of kidsInput) {
+              kidInput.addEventListener('keyup', validateInput)
+            }
           })
         }
 
