@@ -16,7 +16,21 @@ input[type="text"] {
   width: 50px;
 }
 
-.container {
+ul {
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
+#container {
   width: 640px;
   margin: 0 auto;
+}
+
+.error li {
+  font-size: 11px;
+  color: #000;
+  margin-bottom: 5px;
 }
