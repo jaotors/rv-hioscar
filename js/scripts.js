@@ -34,7 +34,6 @@
         }
       }
     }
-
     return par
   }
 
@@ -189,9 +188,30 @@
             if(setError) {
               ageSelect.after(setError)
             } else {
+              let newParagraph = document.createElement('p')
+              newParagraph.innerHTML = `I make $ <input id="inputMoney" type="text"> yearly with <select id="taxPerson"></select> <span class="changeText">person</span> in my tax household.`
+              newContainer.append(newParagraph)
+              let taxPerson = document.getElementById('taxPerson')
 
-              
 
+              for(let i = 0; i < 9; i++) {
+                let op = document.createElement('option')
+                op.value = i
+                op.innerHTML = i
+
+                if(i === 0) {
+                  op.value = i
+                  op.disabled = true
+                  op.innerHTML = ''
+                  op.selected = true
+                }
+
+                if(i === 8) {
+                  op.innerHTML = `${i}+`
+                }
+
+                taxPerson.append(op)
+              }
             }
           })
         }
