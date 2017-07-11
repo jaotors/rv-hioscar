@@ -51,7 +51,6 @@ function generateZipCode(data) {
 }
 
 function generateCover() {
-
   let cover = document.getElementById('wrapCover')
   if(cover != null) cover.remove()
 
@@ -71,7 +70,7 @@ function generateCover() {
   let paragraph = document.createElement('p')
   paragraph.id = `wrapCover`
   paragraph.innerHTML = `I'd like to cover `
-  select.id = selectBox.getCover
+  select.id = selectBox.id
   select.name = selectBox.name
 
   selectBox.options.map((opt) => {
@@ -111,6 +110,31 @@ function generateInitialError(input) {
   }
 
   return errors
+}
+
+function generateElements(input) {
+  let inputs = input.getElementsByTagName('input')
+  let select = input.getElementsByTagName('select')[0]
+  
+  if (select != null) {
+    for(let i = 0; i < 10; i++) {
+      let opt = document.createElement('option')
+      opt.value = i
+      opt.innerHTML = i
+
+      if(i === 0) {
+        opt.innerHTML = ''
+        opt.selected = true
+        opt.disabled = true
+      }
+      select.append(opt)
+    }
+  }
+
+  return {
+    inputs,
+    select
+  }
 
 }
 
@@ -134,10 +158,12 @@ function generateInput(value) {
   paragraph.append(span)
 
   let errors = generateInitialError(paragraph)
+  let elems = generateElements(paragraph)
 
   return {
     value: paragraph,
-    errors: errors
+    errors: errors,
+    elems: elems
   }
 
 }
@@ -163,14 +189,44 @@ function form() {
       newContainer.append(selectCover)
 
       selectCover.addEventListener('change', (e) => {
-        const {value, errors} = generateInput(e.target.selectedIndex)
-        newContainer.append(value)
+        const {value, errors, elems} = generateInput(e.target.selectedIndex)
         let err = putError(errors, 'age')
+        newContainer.append(value)
         value.after(err)
-        
 
+        for(input of elems.inputs) {
+          input.addEventListener('keypress', numbersOnly)
+          input.addEventListener('keyup', (e) => {
+            const {id} = e.target
+            const errCode = [
+              `Hey youngster, you have to be 18 or older to sign up with Oscar`,
+              `Your spouse needs to be at least 18 years old`
+            ]
+            let defErrors = errors
+
+            if(id === 'meAge') {
+              if(e.target.value < 18) {
+                defErrors.splice(0,1, errCode[0])
+              } else {
+                
+              }
+            }
+
+            if(id === 'spouseAge') {
+              if(e.target.value < 18) {
+                defErrors.splice(1,1, errCode[1])
+              }
+            }
+
+            if(defErrors.length > 0) {
+              let err = putError(defErrors, 'age')
+              value.after(err)
+            } else {
+              removeError('age')
+            }
+          })
+        }
       })
-
     }
   })
 }
