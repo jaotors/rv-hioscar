@@ -1,6 +1,9 @@
 # rv-hioscar
 
-Validation
-  - required
-  - 18+ for me and spouse
-  - numbers only
+Need to understand
+  - ...rest
+  - spread...
+  - const function() => {}
+  - async/await
+  - array.includes()
+  - structuring
