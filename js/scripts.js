@@ -287,21 +287,22 @@ function form() {
           input.addEventListener('keyup', e => {
             let newError = getInputError(e.target)
 
-            if(!combinedErrors.some(err => err.id === newError.id)) {
-              combinedErrors.push(newError)
+            if(newError.error != '') {
+              if(!combinedErrors.some(err => err.id === newError.id)) {
+                combinedErrors.push(newError)
+              } else {
+                combinedErrors.map(err => {
+                  if(err.id === newError.id) {
+                    err.error = newError.error
+                  }
+                })
+              }
+              let setErrors = combinedErrors.map(err => err.error)
+              let err = putError(setErrors, 'cover')
+              value.after(err)
             } else {
-              combinedErrors.map(err => {
-                if(err.id === newError.id) {
-                  err.error = newError.error
-                }
-              })
+
             }
-
-            // @@@ remove the error if the input is passed
-
-            let setErrors = combinedErrors.map(err => err.error)
-            let err = putError(setErrors, 'cover')
-            value.after(err)
           })
         }
 
