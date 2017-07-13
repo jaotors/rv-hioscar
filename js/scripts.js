@@ -2,10 +2,6 @@ function numbersOnly(e) {
   if(!e.key.match(/([0-9])/g)) e.preventDefault()
 }
 
-function ageLength(e) {
-  if(e.target.value.length > 2) e.preventDefault()
-}
-
 function zipLength(e) {
   if(e.target.value.length > 3) e.preventDefault()
 }
@@ -57,6 +53,8 @@ function generateZipCode(data) {
 function generateCover() {
   let cover = document.getElementById('wrapCover')
   if(cover != null) cover.remove()
+  let select = document.createElement('select')
+  let paragraph = document.createElement('p')
 
   const selectBox = {
     name: 'cover',
@@ -70,8 +68,6 @@ function generateCover() {
     ]
   }
 
-  let select = document.createElement('select')
-  let paragraph = document.createElement('p')
   paragraph.id = `wrapCover`
   paragraph.innerHTML = `I'd like to cover `
   select.id = selectBox.id
@@ -92,6 +88,34 @@ function generateCover() {
   return paragraph
 }
 
+function generateYearlyMoney() {
+  let yearlyMoney = document.getElementById('wrapMoney')
+  if(yearlyMoney != null) yearlyMoney.remove()
+  let paragraph = document.createElement('p')
+
+  paragraph.id = `wrapMoney`
+  paragraph.innerHTML = `My family makes P<input id="yearlyMake" type="number" /> yearly with <select id="numberTax"></select> people in my tax household.`
+
+  let selectBox = paragraph.getElementsByTagName('select')[0]
+  for(let i = 0; i < 9; i++) {
+    let opt = document.createElement('option')
+    opt.value = i
+    opt.innerHTML = i
+
+    if(i === 0) {
+      opt.value = i
+      opt.innerHTML = ''
+      opt.disabled = true
+      opt.selected = true
+    } else if (i === 8) {
+      opt.innerHTML = `${i}+`
+    }
+    selectBox.append(opt)
+  }
+
+  return paragraph
+}
+
 function generateInitialError(input) {
   let errors = []
   let errCodes = [
@@ -100,17 +124,35 @@ function generateInitialError(input) {
     `All ages are required to get a quote`
   ]
 
+  let error = {}
+
   let inputs = input.getElementsByTagName('input')
   let select = input.getElementsByTagName('select')
 
   if(inputs.length == 1) {
-    errors.push(errCodes[0])
+    error = {
+      id: 'myAge',
+      error: errCodes[0]
+    }
+    errors.push(error)
   } else {
-    errors.push(errCodes[0], errCodes[1])
+    let mapInput = Array.from(inputs)
+
+    mapInput.map((input, index) => {
+      error = {
+        id: input.id,
+        error: errCodes[index]
+      }
+      errors.push(error)
+    })
   }
 
   if(select.length > 0) {
-    errors.push(errCodes[2])
+    error = {
+      id: 'kidsAge',
+      error: errCodes[2]
+    }
+    errors.push(error)
   }
 
   return errors
@@ -139,7 +181,6 @@ function generateElements(input) {
     inputs,
     select
   }
-
 }
 
 function getInputError(input) {
@@ -182,10 +223,10 @@ function generateInput(value) {
   if (ageInput != null) ageInput.remove()
 
   let chooseInput = [
-    `I'm <input name="your" id="myAge" type="text"> years old`,
-    `I'm <input name="your" id="myAge" type="text"> years old and my spouse is <input name="spouse" id="spouseAge" type="text">`,
-    `I'm <input name="your" id="myAge" type="text"> years old and my spouse is <input name="spouse" id="spouseAge" type="text"> and my <select id="kidSelect"></select> <span id="replaceText">kid is</span>`,
-    `I'm <input name="your" id="myAge" type="text"> years old and my <select id="kidSelect"></select> <span id="replaceText">kid is</span>`
+    `I'm <input name="your" id="myAge" min="0" max="999" type="number"> years old`,
+    `I'm <input name="your" id="myAge" min="0" max="999" type="number"> years old and my spouse is <input name="spouse" min="0" max="9999" id="spouseAge" type="number">`,
+    `I'm <input name="your" id="myAge" min="0" max="999" type="number"> years old and my spouse is <input name="spouse" min="0" max="9999" id="spouseAge" type="number"> and my <select id="kidSelect"></select> <span id="replaceText">kid is</span>`,
+    `I'm <input name="your" id="myAge" min="0" max="999" type="number"> years old and my <select id="kidSelect"></select> <span id="replaceText">kid is</span>`
   ]
 
   let paragraph = document.createElement('p')
@@ -216,17 +257,17 @@ function generateKidsInput(num) {
   par.id = 'kidsAgeContainer'
 
   if(num == 1) {
-    par.innerHTML += `<input class="kidsAge" type="text">.`
+    par.innerHTML += `<input min="0" max="999" class="kidsAge" type="number">.`
   } else if (num == 2) {
-    par.innerHTML += `<input class="kidsAge" type="text"> and <input class="kidsAge" type="text">.`
+    par.innerHTML += `<input min="0" max="999" class="kidsAge" type="number"> and <input min="0" max="999" class="kidsAge" type="number">.`
   } else {
     for(let i = 1; i <= num; i++) {
       if(i < (num-1) ) {
-        par.innerHTML += `<input class="kidsAge" type="text">,`
+        par.innerHTML += `<input min="0" max="999" class="kidsAge" type="number">,`
       } else if (i == (num-1)) {
-        par.innerHTML += `<input class="kidsAge" type="text">, and`
+        par.innerHTML += `<input min="0" max="999" class="kidsAge" type="number">, and`
       } else if (i == num) {
-        par.innerHTML += `<input class="kidsAge" type="text">.`
+        par.innerHTML += `<input min="0" max="999" class="kidsAge" type="number">.`
       }
     }
   }
@@ -252,10 +293,73 @@ function getKidsInputError(kid, inputs) {
   }
 }
 
+function generateButton() {
+  let nextBtn = document.getElementById('nextBtn')
+  if(nextBtn != null) nextBtn.remove()
+
+  let btn = document.createElement('button')
+  btn.id = `nextBtn`
+  btn.innerHTML = `Next`
+
+  return btn
+}
+
+function eightDigitsOnly(e) {
+  let errors = []
+  if(e.target.value.length > 8) {
+    errors.push(`Valid income value is required to get a quote`)
+  }
+
+  return errors
+}
+
+
+
 function form() {
   let inputZip = document.getElementById('zipcode')
   let container = document.getElementById('container')
   let newContainer = document.getElementById('continue-container')
+  let quoteContainer = document.getElementsByClassName('quote-container')[0]
+  let checkListContainer = document.getElementById('check-list-container')
+  let thankYouContainer = document.getElementById('thank-you-container')
+  let doneContainer = document.getElementById('done-container')
+  let checks = checkListContainer.getElementsByTagName('input')
+  let arrChecks = Array.from(checks)
+  let nextStep = document.getElementById('nextStep')
+
+  checkListContainer.style.display = "none"
+  thankYouContainer.style.display = "none"
+  doneContainer.style.display = "none"
+  
+  arrChecks.map(check => {
+    check.onchange = () => {
+      let inputChecks = arrChecks.some(checks => checks.checked === true)
+      if(inputChecks === true) {
+        nextStep.innerHTML = 'Get Quote'
+      } else {
+        nextStep.innerHTML = 'Skip'
+      }
+    }
+  })
+
+  nextStep.addEventListener('click', () => {
+    checkListContainer.style.display = "none"
+    thankYouContainer.style.display = "block"
+    let rotate = thankYouContainer.getElementsByClassName('loader')[0]
+
+    let i = 10
+    let interval = setInterval(() => {
+      rotate.style.transform = `rotate(${i}deg)`
+      i += 10
+    }, 100)
+
+    setTimeout(() => {
+      clearInterval(interval)
+      thankYouContainer.style.display = "none"
+      doneContainer.style.display = "block"
+    }, 5000)
+  })
+
 
   inputZip.addEventListener('keypress', (e) => {
     numbersOnly(e)
@@ -274,16 +378,16 @@ function form() {
 
       selectCover.addEventListener('change', (e) => {
         const {value, errors, elems} = generateInput(e.target.selectedIndex)
-        let err = putError(errors, 'cover')
-        let combinedErrors = []
+        let combinedErrors = errors
+        let setErrors = combinedErrors.map(err => err.error)
+        let err = putError(setErrors, 'cover')
+        let wrapMoney = document.getElementById('wrapMoney')
+        if(wrapMoney != null) wrapMoney.remove()
         newContainer.append(value)
         value.after(err)
 
         for(input of elems.inputs) {
-          input.addEventListener('keypress', e => {
-            numbersOnly(e)
-            ageLength(e)
-          })
+          input.addEventListener('keypress', numbersOnly)
           input.addEventListener('keyup', e => {
             let newError = getInputError(e.target)
 
@@ -301,7 +405,46 @@ function form() {
               let err = putError(setErrors, 'cover')
               value.after(err)
             } else {
+              combinedErrors = combinedErrors.filter((err, index) => {
+                return err.id != newError.id
+              })
+              let setErrors = combinedErrors.map(err => err.error)
+              let err = putError(setErrors, 'cover')
+              value.after(err)
+            }
 
+            if(combinedErrors.length < 1) {
+              let taxContainer = generateYearlyMoney()
+              newContainer.append(taxContainer)
+              let input = document.getElementById('yearlyMake')
+
+              input.addEventListener('keypress', numbersOnly)
+              input.addEventListener('keyup', e => {
+                if(e.target.value > 0 || e.target.value != '') {
+                  let setErrors = eightDigitsOnly(e)
+                  let err = putError(setErrors, 'money')
+                  taxContainer.after(err)
+                  
+                  if(setErrors.length < 1) {
+                    let nextBtn = generateButton()
+                    taxContainer.append(nextBtn)
+
+                    nextBtn.addEventListener('click', e => {
+                      quoteContainer.style.display = "none"
+                      checkListContainer.style.display = 'block'
+                    })
+                  } else {
+                    let nextBtn = document.getElementById('nextBtn')
+                    if(nextBtn != null) nextBtn.remove()
+                  }
+                } else {
+                  let nextBtn = document.getElementById('nextBtn')
+                  if(nextBtn != null) nextBtn.remove()
+                }
+              })
+            } else {
+              let nextBtn = document.getElementById('nextBtn')
+              if(nextBtn != null) nextBtn.remove()
             }
           })
         }
@@ -326,13 +469,51 @@ function form() {
                       }
                     })
                   }
+                  let setErrors = combinedErrors.map(err => err.error)
+                  let err = putError(setErrors, 'cover')
+                  value.after(err)
+                } else {
+                  combinedErrors = combinedErrors.filter((err, index) => {
+                    return err.id != newError.id
+                  })
+                  let setErrors = combinedErrors.map(err => err.error)
+                  let err = putError(setErrors, 'cover')
+                  value.after(err)
                 }
 
-                // @@@ remove the error if the input is passed
+                if(combinedErrors.length < 1) {
+                  let taxContainer = generateYearlyMoney()
+                  newContainer.append(taxContainer)
+                  let input = document.getElementById('yearlyMake')
 
-                let setErrors = combinedErrors.map(err => err.error)
-                let err = putError(setErrors, 'cover')
-                value.after(err)
+                  input.addEventListener('keypress', numbersOnly)
+                  input.addEventListener('keyup', e => {
+                    if(e.target.value > 0 || e.target.value != '') {
+                      let setErrors = eightDigitsOnly(e)
+                      let err = putError(setErrors, 'money')
+                      taxContainer.after(err)
+                      
+                      if(setErrors.length < 1) {
+                        let nextBtn = generateButton()
+                        taxContainer.append(nextBtn)
+
+                        nextBtn.addEventListener('click', e => {
+                          quoteContainer.style.display = "none"
+                          checkListContainer.style.display = 'block'
+                        })
+                      } else {
+                        let nextBtn = document.getElementById('nextBtn')
+                        if(nextBtn != null) nextBtn.remove()
+                      }
+                    } else {
+                      let nextBtn = document.getElementById('nextBtn')
+                      if(nextBtn != null) nextBtn.remove()
+                    }
+                  })
+                } else {
+                  let nextBtn = document.getElementById('nextBtn')
+                  if(nextBtn != null) nextBtn.remove()
+                }
               })
             }
           })

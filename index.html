@@ -7,8 +7,51 @@
 </head>
 <body>
   <div id="container">
-    <p id="inputStart"><span>My zipcode is</span><input id="zipcode" type="text" placeholder="1225"></p>
-    <div id="continue-container"></div>
+    <div class="quote-container">
+      <p id="inputStart"><span>My zipcode is</span><input id="zipcode" type="number" min="0" max="9999" placeholder="1225"></p>
+      <div id="continue-container"></div>
+    </div>
+
+
+    <div id="check-list-container">
+      <h3>Tell us about your health and we’ll recommend a plan for you. Your answers will have no impact on rates.</h3>
+
+      <ul class="check-list">
+        <li>
+          <p><input type="checkbox" name="health">I expect to see a specialist more than twice in 2017.</p>
+          <p class="example">e.g. cardiologists, endocrinologists, dermatologists</p>
+        </li>
+
+        <li>
+          <p><input type="checkbox" name="health">I am managing a chronic illness.</p>
+          <p class="example">e.g. diabetes, heart disease, depression, arthritis</p>
+        </li>
+
+        <li>
+          <p><input type="checkbox" name="health">I have a planned procedure for 2017.</p>
+          <p class="example">e.g. if you need surgery or are having a baby</p>
+        </li>
+
+        <li>
+          <p><input type="checkbox" name="health">I take two or more prescriptions every month</p>
+          <p class="example">e.g. medicine you take regularly or as needed</p>
+        </li>
+      </ul>
+
+      <button id="nextStep">Skip</button>
+    </div>
+
+    <div id="thank-you-container">
+      <p>Thanks</p>
+      <p class="big">We’re putting together your personalized quote.</p>
+      <p class="loader">T</p>
+    </div>
+
+    <div id="done-container">
+      <p>This is important!</p>
+      <p>Based on your income, you may qualify for a Essential Health Plan from the New York State of Health (NYSoH). For more information on Essential Health Plans, please visit NYSoH at nystateofhealth.ny.gov</p>
+      <p>Your age qualifies you for Medicare. Oscar does not offer Medicare policies, but our partner, GoHealth, can help you enroll in a Medicare policy offered in your area at 855-786-2825 or at gohealth.com/oscar.</p>
+    </div>
   </div>
 
   <script src="js/scripts.js"></script>
