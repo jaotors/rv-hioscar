@@ -44,6 +44,10 @@ select {
   border-bottom: 2px solid #fff;
 }
 
+select option {
+  color: #000;
+}
+
 ul {
   padding: 0;
 }
@@ -64,6 +68,7 @@ li {
 #thank-you-container .loader {
   font-size: 24px;
   margin-top: 20px;
+  transition: 1s
 }
 
 #container {
@@ -92,4 +97,21 @@ li {
 
 #done-container p:first-child {
   font-size: 20px;
+}
+
+button {
+  border: none;
+  background-color: #fff;
+  display: block;
+  padding: 15px 20px;
+  margin-top: 15px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: 0.5s;
+  
+}
+
+button:hover {
+  box-shadow: 0 6px 10px rgba(0,0,0, 0.3);
+  transform: translateY(-5px);
 }

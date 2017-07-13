@@ -1,13 +1,4 @@
-function numbersOnly(e) {
-  if(!e.key.match(/([0-9])/g)) e.preventDefault()
-}
-
-function zipLength(e) {
-  if(e.target.value.length > 3) e.preventDefault()
-}
-
 function removeError(name) {
-  //removing the current errors
   let errCont = document.getElementsByClassName(`error-${name}`)
   if(errCont.length > 0) {
     for(err of errCont) {
@@ -81,7 +72,7 @@ function generateCover() {
     option.selected = opt.selected
 
     select.append(option)
-  }).reverse()
+  })
 
   paragraph.append(select)
 
@@ -272,6 +263,9 @@ function generateKidsInput(num) {
     }
   }
   replaceText.after(par)
+  if(num > 1) {
+    replaceText.innerHTML = 'kids are'
+  }
   let kidsInputs = par.getElementsByTagName('input')
 
   return kidsInputs
@@ -304,16 +298,14 @@ function generateButton() {
   return btn
 }
 
-function eightDigitsOnly(e) {
+function eightDigitsOnly(value) {
   let errors = []
-  if(e.target.value.length > 8) {
+  if(value.length > 8) {
     errors.push(`Valid income value is required to get a quote`)
   }
 
   return errors
 }
-
-
 
 function form() {
   let inputZip = document.getElementById('zipcode')
@@ -332,14 +324,10 @@ function form() {
   doneContainer.style.display = "none"
   
   arrChecks.map(check => {
-    check.onchange = () => {
+    check.addEventListener('change', () => {
       let inputChecks = arrChecks.some(checks => checks.checked === true)
-      if(inputChecks === true) {
-        nextStep.innerHTML = 'Get Quote'
-      } else {
-        nextStep.innerHTML = 'Skip'
-      }
-    }
+      nextStep.innerHTML = (inputChecks === true) ? 'Get Quote' : 'Skip'
+    })
   })
 
   nextStep.addEventListener('click', () => {
@@ -358,12 +346,6 @@ function form() {
       thankYouContainer.style.display = "none"
       doneContainer.style.display = "block"
     }, 5000)
-  })
-
-
-  inputZip.addEventListener('keypress', (e) => {
-    numbersOnly(e)
-    zipLength(e)
   })
 
   inputZip.addEventListener('keyup', (e) => {
@@ -387,7 +369,6 @@ function form() {
         value.after(err)
 
         for(input of elems.inputs) {
-          input.addEventListener('keypress', numbersOnly)
           input.addEventListener('keyup', e => {
             let newError = getInputError(e.target)
 
@@ -417,31 +398,54 @@ function form() {
               let taxContainer = generateYearlyMoney()
               newContainer.append(taxContainer)
               let input = document.getElementById('yearlyMake')
+              let numberTax = document.getElementById('numberTax')
 
-              input.addEventListener('keypress', numbersOnly)
               input.addEventListener('keyup', e => {
-                if(e.target.value > 0 || e.target.value != '') {
-                  let setErrors = eightDigitsOnly(e)
-                  let err = putError(setErrors, 'money')
-                  taxContainer.after(err)
-                  
-                  if(setErrors.length < 1) {
-                    let nextBtn = generateButton()
-                    taxContainer.append(nextBtn)
+                let nextBtn = document.getElementById('nextBtn')
+                if(nextBtn != null) nextBtn.remove()
+                
+                if(combinedErrors.length < 1) {
+                  if(e.target.value > 0 || e.target.value != '') {
+                    let setErrors = eightDigitsOnly(e.target.value)
+                    let err = putError(setErrors, 'money')
+                    taxContainer.after(err)
+                    
+                    if(setErrors.length < 1 && numberTax.selectedIndex != 0) {
+                      let nextBtn = generateButton()
+                      taxContainer.append(nextBtn)
 
-                    nextBtn.addEventListener('click', e => {
-                      quoteContainer.style.display = "none"
-                      checkListContainer.style.display = 'block'
-                    })
-                  } else {
-                    let nextBtn = document.getElementById('nextBtn')
-                    if(nextBtn != null) nextBtn.remove()
+                      nextBtn.addEventListener('click', e => {
+                        quoteContainer.style.display = "none"
+                        checkListContainer.style.display = 'block'
+                      })
+                    }
                   }
-                } else {
-                  let nextBtn = document.getElementById('nextBtn')
-                  if(nextBtn != null) nextBtn.remove()
                 }
               })
+
+              numberTax.addEventListener('change', (e) => {
+                let nextBtn = document.getElementById('nextBtn')
+                if(nextBtn != null) nextBtn.remove()
+
+                if(combinedErrors.length < 1) {
+                  if(input.value > 0 || input.value != '') {
+                    let setErrors = eightDigitsOnly(input.value)
+                    let err = putError(setErrors, 'money')
+                    taxContainer.after(err)
+                    
+                    if(setErrors.length < 1 && numberTax.selectedIndex != 0) {
+                      let nextBtn = generateButton()
+                      taxContainer.append(nextBtn)
+
+                      nextBtn.addEventListener('click', e => {
+                        quoteContainer.style.display = "none"
+                        checkListContainer.style.display = 'block'
+                      })
+                    }
+                  }
+                }
+              })
+
             } else {
               let nextBtn = document.getElementById('nextBtn')
               if(nextBtn != null) nextBtn.remove()
@@ -485,29 +489,51 @@ function form() {
                   let taxContainer = generateYearlyMoney()
                   newContainer.append(taxContainer)
                   let input = document.getElementById('yearlyMake')
+                  let numberTax = document.getElementById('numberTax')
 
-                  input.addEventListener('keypress', numbersOnly)
                   input.addEventListener('keyup', e => {
-                    if(e.target.value > 0 || e.target.value != '') {
-                      let setErrors = eightDigitsOnly(e)
-                      let err = putError(setErrors, 'money')
-                      taxContainer.after(err)
-                      
-                      if(setErrors.length < 1) {
-                        let nextBtn = generateButton()
-                        taxContainer.append(nextBtn)
+                    let nextBtn = document.getElementById('nextBtn')
+                    if(nextBtn != null) nextBtn.remove()
+                    
+                    if(combinedErrors.length < 1) {
+                      if(e.target.value > 0 || e.target.value != '') {
+                        let setErrors = eightDigitsOnly(e.target.value)
+                        let err = putError(setErrors, 'money')
+                        taxContainer.after(err)
+                        
+                        if(setErrors.length < 1 && numberTax.selectedIndex != 0) {
+                          let nextBtn = generateButton()
+                          taxContainer.append(nextBtn)
 
-                        nextBtn.addEventListener('click', e => {
-                          quoteContainer.style.display = "none"
-                          checkListContainer.style.display = 'block'
-                        })
-                      } else {
-                        let nextBtn = document.getElementById('nextBtn')
-                        if(nextBtn != null) nextBtn.remove()
+                          nextBtn.addEventListener('click', e => {
+                            quoteContainer.style.display = "none"
+                            checkListContainer.style.display = 'block'
+                          })
+                        }
                       }
-                    } else {
-                      let nextBtn = document.getElementById('nextBtn')
-                      if(nextBtn != null) nextBtn.remove()
+                    }
+                  })
+
+                  numberTax.addEventListener('change', (e) => {
+                    let nextBtn = document.getElementById('nextBtn')
+                    if(nextBtn != null) nextBtn.remove()
+
+                    if(combinedErrors.length < 1) {
+                      if(input.value > 0 || input.value != '') {
+                        let setErrors = eightDigitsOnly(input.value)
+                        let err = putError(setErrors, 'money')
+                        taxContainer.after(err)
+                        
+                        if(setErrors.length < 1 && numberTax.selectedIndex != 0) {
+                          let nextBtn = generateButton()
+                          taxContainer.append(nextBtn)
+
+                          nextBtn.addEventListener('click', e => {
+                            quoteContainer.style.display = "none"
+                            checkListContainer.style.display = 'block'
+                          })
+                        }
+                      }
                     }
                   })
                 } else {
