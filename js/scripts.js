@@ -360,9 +360,7 @@ function inputEvent({newError, combinedErrors, value}) {
             taxContainer.append(nextBtn)
 
             nextBtn.addEventListener('click', e => {
-              let testContinue = letContinue.some(inputVal => {
-                return inputVal.value.match(/([^0-9])+/g)
-              })
+              let testContinue = letContinue.some(inputVal => inputVal.value.match(/([^0-9])+/g))
 
               if(!testContinue) {
                 quoteContainer.style.display = "none"
@@ -408,7 +406,6 @@ function inputEvent({newError, combinedErrors, value}) {
   } else {
     removeElem('nextBtn')
   }
-
   return combinedErrors
 }
 
@@ -495,7 +492,7 @@ function form() {
       clearInterval(interval)
       thankYouContainer.style.display = "none"
       doneContainer.style.display = "block"
-    }, 5000)
+    }, 4000)
   })
 }
 
