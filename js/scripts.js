@@ -307,6 +307,11 @@ function eightDigitsOnly(value) {
   return errors
 }
 
+function removeElem(id) {
+  let removeEl = document.getElementById(id)
+  if(removeEl != null) removeEl.remove()
+}
+
 function inputEvent({newError, combinedErrors, value}) {
   let newContainer = document.getElementById('continue-container')
   let quoteContainer = document.getElementsByClassName('quote-container')[0]
@@ -342,8 +347,7 @@ function inputEvent({newError, combinedErrors, value}) {
     let numberTax = document.getElementById('numberTax')
 
     input.addEventListener('keyup', e => {
-      let nextBtn = document.getElementById('nextBtn')
-      if(nextBtn != null) nextBtn.remove()
+      removeElem('nextBtn')
       
       if(combinedErrors.length < 1) {
         if(e.target.value > 0 || e.target.value != '') {
@@ -373,8 +377,7 @@ function inputEvent({newError, combinedErrors, value}) {
     })
 
     numberTax.addEventListener('change', (e) => {
-      let nextBtn = document.getElementById('nextBtn')
-      if(nextBtn != null) nextBtn.remove()
+      removeElem('nextBtn')
 
       if(combinedErrors.length < 1) {
         if(input.value > 0 || input.value != '') {
@@ -402,10 +405,8 @@ function inputEvent({newError, combinedErrors, value}) {
         }
       }
     })
-
   } else {
-    let nextBtn = document.getElementById('nextBtn')
-    if(nextBtn != null) nextBtn.remove()
+    removeElem('nextBtn')
   }
 
   return combinedErrors
@@ -426,39 +427,13 @@ function form() {
   checkListContainer.style.display = "none"
   thankYouContainer.style.display = "none"
   doneContainer.style.display = "none"
-  
-  arrChecks.map(check => {
-    check.addEventListener('change', () => {
-      let inputChecks = arrChecks.some(checks => checks.checked === true)
-      nextStep.innerHTML = (inputChecks === true) ? 'Get Quote' : 'Skip'
-    })
-  })
-
-  nextStep.addEventListener('click', () => {
-    checkListContainer.style.display = "none"
-    thankYouContainer.style.display = "block"
-    let rotate = thankYouContainer.getElementsByClassName('loader')[0]
-
-    let i = 10
-    let interval = setInterval(() => {
-      rotate.style.transform = `rotate(${i}deg)`
-      i += 100
-    }, 100)
-
-    setTimeout(() => {
-      clearInterval(interval)
-      thankYouContainer.style.display = "none"
-      doneContainer.style.display = "block"
-    }, 5000)
-  })
 
   inputZip.addEventListener('keyup', (e) => {
     const {errors} = generateZipCode(e.target.value)
     if(errors.length > 0) {
       let err = putError(errors, 'zip')
       inputZip.after(err)
-      let nextBtn = document.getElementById('nextBtn')
-      if(nextBtn != null) nextBtn.remove()
+      removeElem('nextBtn')
     } else {
       removeError('zip')
       let selectCover = generateCover()
@@ -469,8 +444,7 @@ function form() {
         let combinedErrors = errors
         let setErrors = combinedErrors.map(err => err.error)
         let err = putError(setErrors, 'cover')
-        let wrapMoney = document.getElementById('wrapMoney')
-        if(wrapMoney != null) wrapMoney.remove()
+        removeElem('wrapMoney')
         newContainer.append(value)
         value.after(err)
 
@@ -497,6 +471,31 @@ function form() {
         }
       })
     }
+  })
+
+  arrChecks.map(check => {
+    check.addEventListener('change', () => {
+      let inputChecks = arrChecks.some(checks => checks.checked === true)
+      nextStep.innerHTML = (inputChecks === true) ? 'Get Quote' : 'Skip'
+    })
+  })
+
+  nextStep.addEventListener('click', () => {
+    checkListContainer.style.display = "none"
+    thankYouContainer.style.display = "block"
+    let rotate = thankYouContainer.getElementsByClassName('loader')[0]
+
+    let i = 10
+    let interval = setInterval(() => {
+      rotate.style.transform = `rotate(${i}deg)`
+      i += 100
+    }, 100)
+
+    setTimeout(() => {
+      clearInterval(interval)
+      thankYouContainer.style.display = "none"
+      doneContainer.style.display = "block"
+    }, 5000)
   })
 }
 
