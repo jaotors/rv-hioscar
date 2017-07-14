@@ -107,11 +107,11 @@ button {
   margin-top: 15px;
   border-radius: 3px;
   cursor: pointer;
-  transition: 0.5s;
+  transition: 0.3s;
   
 }
 
 button:hover {
   box-shadow: 0 6px 10px rgba(0,0,0, 0.3);
-  transform: translateY(-5px);
+  transform: translateY(-2px);
 }
