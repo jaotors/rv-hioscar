@@ -28,22 +28,14 @@ function generateZipCode(data) {
   ]
   let errors = []
 
-  if(!zipcodes.includes(data)) {
-    errors.push(errCodes[0])
-  }
+  if(!zipcodes.includes(data)) errors.push(errCodes[0])
 
-  if(data.length < 4) {
-    errors.push(errCodes[1])
-  }
+  if(data.length < 4 || data.length > 4) errors.push(errCodes[1])
 
-  return {
-    errors: errors
-  }
+  return errors
 }
 
 function generateCover() {
-  let cover = document.getElementById('wrapCover')
-  if(cover != null) cover.remove()
   let select = document.createElement('select')
   let paragraph = document.createElement('p')
 
@@ -210,8 +202,7 @@ function generateElements(input) {
 }
 
 function generateInput(value) {
-  let ageInput = document.getElementById('ageInput')
-  if (ageInput != null) ageInput.remove()
+  removeElemId('ageInput')
 
   let chooseInput = [
     `I'm <input name="your" id="myAge" min="0" max="999" type="number"> years old`,
@@ -240,10 +231,9 @@ function generateInput(value) {
 
 function generateKidsInput(num) {
   let par = document.createElement('span')
-  let kidsAgeContainer = document.getElementById('kidsAgeContainer')
   let replaceText = document.getElementById('replaceText')
   let ageSelect = document.getElementById('ageSelect')
-  if(kidsAgeContainer != null) kidsAgeContainer.remove()
+  removeElemId('kidsAgeContainer')
 
   par.id = 'kidsAgeContainer'
 
@@ -263,10 +253,8 @@ function generateKidsInput(num) {
     }
   }
   replaceText.after(par)
-  if(num > 1) {
-    replaceText.innerHTML = 'kids are'
-  }
-  let kidsInputs = par.getElementsByTagName('input')
+  if(num > 1) replaceText.innerHTML = 'kids are'
+  const kidsInputs = par.getElementsByTagName('input')
 
   return kidsInputs
 }
@@ -274,7 +262,7 @@ function generateKidsInput(num) {
 function getKidsInputError(kid, inputs) {
   let error = `All ages are required to get a quote`
 
-  let input = Array.from(inputs)
+  const input = Array.from(inputs)
   let withError = input.some(err => err.value == '')
 
   if(!withError) {
@@ -288,8 +276,7 @@ function getKidsInputError(kid, inputs) {
 }
 
 function generateButton() {
-  let nextBtn = document.getElementById('nextBtn')
-  if(nextBtn != null) nextBtn.remove()
+  removeElemId('nextBtn')
 
   let btn = document.createElement('button')
   btn.id = `nextBtn`
@@ -307,16 +294,16 @@ function eightDigitsOnly(value) {
   return errors
 }
 
-function removeElem(id) {
-  let removeEl = document.getElementById(id)
+function removeElemId(id) {
+  const removeEl = document.getElementById(id)
   if(removeEl != null) removeEl.remove()
 }
 
 function inputEvent({newError, combinedErrors, value}) {
-  let newContainer = document.getElementById('continue-container')
-  let quoteContainer = document.getElementsByClassName('quote-container')[0]
-  let checkListContainer = document.getElementById('check-list-container')
-  let letContinue = Array.from(newContainer.getElementsByTagName('input'))
+  const newContainer = document.getElementById('continue-container')
+  const quoteContainer = document.getElementsByClassName('quote-container')[0]
+  const checkListContainer = document.getElementById('check-list-container')
+  const letContinue = Array.from(newContainer.getElementsByTagName('input'))
 
   if(newError.error != '') {
     if(!combinedErrors.some(err => err.id === newError.id)) {
@@ -341,13 +328,13 @@ function inputEvent({newError, combinedErrors, value}) {
   }
 
   if(combinedErrors.length < 1) {
-    let taxContainer = generateYearlyMoney()
+    const taxContainer = generateYearlyMoney()
     newContainer.append(taxContainer)
-    let input = document.getElementById('yearlyMake')
-    let numberTax = document.getElementById('numberTax')
+    const input = document.getElementById('yearlyMake')
+    const numberTax = document.getElementById('numberTax')
 
     input.addEventListener('keyup', e => {
-      removeElem('nextBtn')
+      removeElemId('nextBtn')
       
       if(combinedErrors.length < 1) {
         if(e.target.value > 0 || e.target.value != '') {
@@ -366,7 +353,7 @@ function inputEvent({newError, combinedErrors, value}) {
                 quoteContainer.style.display = "none"
                 checkListContainer.style.display = 'block'
               } else {
-                alert(`There are inputs that has a letter or special characters.`)
+                alert(`There are inputs that have a letter or special characters.`)
               }
             })
           }
@@ -375,7 +362,7 @@ function inputEvent({newError, combinedErrors, value}) {
     })
 
     numberTax.addEventListener('change', (e) => {
-      removeElem('nextBtn')
+      removeElemId('nextBtn')
 
       if(combinedErrors.length < 1) {
         if(input.value > 0 || input.value != '') {
@@ -404,36 +391,41 @@ function inputEvent({newError, combinedErrors, value}) {
       }
     })
   } else {
-    removeElem('nextBtn')
+    removeElemId('nextBtn')
   }
   return combinedErrors
 }
 
 function form() {
-  let inputZip = document.getElementById('zipcode')
-  let container = document.getElementById('container')
-  let newContainer = document.getElementById('continue-container')
-  let quoteContainer = document.getElementsByClassName('quote-container')[0]
-  let checkListContainer = document.getElementById('check-list-container')
-  let thankYouContainer = document.getElementById('thank-you-container')
-  let doneContainer = document.getElementById('done-container')
-  let checks = checkListContainer.getElementsByTagName('input')
-  let arrChecks = Array.from(checks)
-  let nextStep = document.getElementById('nextStep')
+  const inputZip = document.getElementById('zipcode')
+  const container = document.getElementById('container')
+  const newContainer = document.getElementById('continue-container')
+  const quoteContainer = document.getElementsByClassName('quote-container')[0]
+  const checkListContainer = document.getElementById('check-list-container')
+  const thankYouContainer = document.getElementById('thank-you-container')
+  const doneContainer = document.getElementById('done-container')
+  const checks = checkListContainer.getElementsByTagName('input')
+  const arrChecks = Array.from(checks)
+  const nextStep = document.getElementById('nextStep')
 
   checkListContainer.style.display = "none"
   thankYouContainer.style.display = "none"
   doneContainer.style.display = "none"
 
   inputZip.addEventListener('keyup', (e) => {
-    const {errors} = generateZipCode(e.target.value)
+    const errors = generateZipCode(e.target.value)
     if(errors.length > 0) {
-      let err = putError(errors, 'zip')
+      const err = putError(errors, 'zip')
       inputZip.after(err)
-      removeElem('nextBtn')
+      removeElemId('nextBtn')
     } else {
       removeError('zip')
-      let selectCover = generateCover()
+      removeError('cover')
+      removeError('money')
+      removeElemId('wrapCover')
+      removeElemId('ageInput')
+      removeElemId('wrapMoney')
+      const selectCover = generateCover()
       newContainer.append(selectCover)
 
       selectCover.addEventListener('change', (e) => {
@@ -441,7 +433,7 @@ function form() {
         let combinedErrors = errors
         let setErrors = combinedErrors.map(err => err.error)
         let err = putError(setErrors, 'cover')
-        removeElem('wrapMoney')
+        removeElemId('wrapMoney')
         newContainer.append(value)
         value.after(err)
 
@@ -453,7 +445,7 @@ function form() {
         }
 
         if(elems.select != undefined) {
-          let selectKids = elems.select
+          const selectKids = elems.select
 
           selectKids.addEventListener('change', e => {
             let kidInputs = generateKidsInput(e.target.value)
